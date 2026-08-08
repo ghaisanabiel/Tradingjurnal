@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trade Journal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="sidenav">
+  <div class="brand">TJ</div>
+  <a href="#" class="nav-item active" data-view="dashboard" title="Dashboard">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+  </a>
+  <a href="#" class="nav-item" data-view="journal" title="Journal">
+    <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>
+  </a>
+  <a href="#" class="nav-item" data-view="statistics" title="Statistics">
+    <svg viewBox="0 0 24 24"><line x1="4" y1="20" x2="4" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="20" y1="20" x2="20" y2="14"/></svg>
+  </a>
+  <a href="#" class="nav-item" data-view="calendar" title="Calendar">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg>
+  </a>
+</nav>
+
+<main class="app">
+  <header class="topbar">
+    <h1 id="pageTitle">Trade Journal</h1>
+    <div class="topbar-actions">
+      <div class="period-select">
+        <span id="periodLabel">This Month</span>
+      </div>
+      <button class="btn-ghost" id="syncAllBtn">Sync All</button>
+      <div class="avatar"></div>
+    </div>
+  </header>
+
+  <section id="view-dashboard" class="view active">
+    <div class="summary-card">
+      <div class="summary-item">
+        <div class="summary-icon wallet"></div>
+        <div class="summary-label">Balance</div>
+        <div class="summary-value" id="statBalance">$0.00</div>
+        <div class="summary-sub positive" id="statBalanceDelta"></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon trend"></div>
+        <div class="summary-label">Today's PnL</div>
+        <div class="summary-value positive" id="statTodayPnl">$0.00</div>
+        <div class="summary-sub positive" id="statTodayPnlPct"></div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-icon dollar"></div>
+        <div class="summary-label">Total PnL</div>
+        <div class="summary-value positive" id="statTotalPnl">$0.00</div>
+        <div class="summary-sub positive" id="statTotalPnlPct"></div>
+      </div>
+    </div>
+
+    <div class="perf-scroll" id="perfCards">
+      <!-- populated by dashboard.js: Win Rate, Total Trades, Profit Factor, Avg RR, Expectancy -->
+    </div>
+
+    <div class="journal-header">
+      <h2>Journal</h2>
+      <div class="journal-actions">
+        <input type="search" id="journalSearch" placeholder="Search pair...">
+        <button class="btn-icon" id="filterBtn" title="Filter">⚙</button>
+      </div>
+    </div>
+
+    <div class="journal-list" id="journalList">
+      <!-- trade cards injected here -->
+    </div>
+  </section>
+
+  <section id="view-journal" class="view"><p class="placeholder">Full journal list — same card component as dashboard, no limit, with filter panel (exchange/pair/status/date).</p></section>
+  <section id="view-statistics" class="view"><p class="placeholder">Overview / Performance / Risk / Consistency / History — from /stats/* endpoints.</p></section>
+  <section id="view-calendar" class="view"><p class="placeholder">Month grid from /stats/calendar — click a day to list that day's trades.</p></section>
+</main>
+
+<template id="tradeCardTemplate">
+  <article class="trade-card">
+    <div class="trade-chart"></div>
+    <div class="trade-main">
+      <div class="trade-top">
+        <span class="badge"></span>
+        <span class="pair"></span>
+      </div>
+      <div class="trade-meta"></div>
+      <div class="trade-prices">
+        <div><span class="k">Entry</span><span class="entry"></span></div>
+        <div><span class="k">Exit</span><span class="exit"></span></div>
+        <div><span class="k">Open</span><span class="open"></span></div>
+        <div><span class="k">Close</span><span class="close"></span></div>
+      </div>
+    </div>
+    <div class="trade-result">
+      <div class="pnl"></div>
+      <div class="roi"></div>
+      <span class="status-badge"></span>
+    </div>
+  </article>
+</template>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
