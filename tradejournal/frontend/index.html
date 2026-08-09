@@ -8,6 +8,33 @@
 </head>
 <body>
 
+<div id="authScreen" class="auth-screen">
+  <div class="auth-card">
+    <div class="brand-lg">TJ</div>
+    <h1>Trade Journal</h1>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-tab="login">Login</button>
+      <button type="button" class="auth-tab" data-tab="register">Register</button>
+    </div>
+
+    <form id="loginForm" class="auth-form active">
+      <input type="email" id="loginEmail" placeholder="Email" autocomplete="email" required>
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+
+    <form id="registerForm" class="auth-form">
+      <input type="email" id="registerEmail" placeholder="Email" autocomplete="email" required>
+      <input type="password" id="registerPassword" placeholder="Password (min 8 karakter)" autocomplete="new-password" minlength="8" required>
+      <button type="submit" class="btn-primary">Register</button>
+    </form>
+
+    <p id="authError" class="auth-error"></p>
+  </div>
+</div>
+
+<div id="appShell" class="app-shell">
+
 <nav class="sidenav">
   <div class="brand">TJ</div>
   <a href="#" class="nav-item active" data-view="dashboard" title="Dashboard">
@@ -32,6 +59,7 @@
         <span id="periodLabel">This Month</span>
       </div>
       <button class="btn-ghost" id="syncAllBtn">Sync All</button>
+      <button class="btn-ghost" id="logoutBtn">Logout</button>
       <div class="avatar"></div>
     </div>
   </header>
@@ -79,6 +107,8 @@
   <section id="view-statistics" class="view"><p class="placeholder">Overview / Performance / Risk / Consistency / History — from /stats/* endpoints.</p></section>
   <section id="view-calendar" class="view"><p class="placeholder">Month grid from /stats/calendar — click a day to list that day's trades.</p></section>
 </main>
+
+</div><!-- /#appShell -->
 
 <template id="tradeCardTemplate">
   <article class="trade-card">

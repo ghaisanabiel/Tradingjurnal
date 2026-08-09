@@ -24,6 +24,45 @@ body{
 }
 svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
 
+/* ---- Auth screen ---- */
+.auth-screen{
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background:var(--bg); z-index:50; padding:20px;
+}
+.auth-screen.hidden{ display:none; }
+.auth-card{
+  width:100%; max-width:360px; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:32px; text-align:center;
+}
+.brand-lg{
+  width:52px;height:52px;border-radius:14px; margin:0 auto 16px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  display:flex;align-items:center;justify-content:center; font-weight:700; font-size:18px;
+}
+.auth-card h1{ font-size:20px; margin:0 0 20px; }
+.auth-tabs{ display:flex; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px; margin-bottom:20px; }
+.auth-tab{
+  flex:1; background:transparent; border:none; color:var(--text-dim); padding:9px 0;
+  border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;
+}
+.auth-tab.active{ background:var(--accent); color:#fff; }
+.auth-form{ display:none; flex-direction:column; gap:12px; text-align:left; }
+.auth-form.active{ display:flex; }
+.auth-form input{
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+  padding:11px 14px; border-radius:var(--radius-sm); font-size:14px; width:100%;
+}
+.auth-form input:focus{ outline:none; border-color:var(--accent-2); }
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2)); color:#fff; border:none;
+  padding:11px 0; border-radius:var(--radius-sm); font-size:14px; font-weight:700; cursor:pointer; margin-top:4px;
+}
+.btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+.auth-error{ color:var(--red); font-size:13px; min-height:18px; margin:14px 0 0; }
+
+.app-shell{ display:none; }
+.app-shell.visible{ display:block; }
+
 /* ---- Sidebar (desktop) / bottom nav (mobile) ---- */
 .sidenav{
   position:fixed; left:0; top:0; bottom:0; width:76px;
