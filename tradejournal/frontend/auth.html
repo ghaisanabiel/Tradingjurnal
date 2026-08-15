@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trade Journal — Sign in</title>
+    <script>
+      // Redirect before paint if already authenticated — no flash of the login screen.
+      if (localStorage.getItem("access_token")) {
+        location.replace("index.html");
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/auth.css" />
+  </head>
+  <body>
+    <canvas id="candleCanvas"></canvas>
+    <div class="grid-overlay"></div>
+    <div class="vignette"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <main class="auth-wrapper">
+      <div class="brand-mark">
+        <span class="brand-glyph">TJ</span>
+        <span class="brand-word">Trade Journal</span>
+      </div>
+
+      <div class="auth-panel">
+        <div class="auth-track" id="authTrack">
+          <!-- LOGIN -->
+          <section class="auth-slide" id="loginSlide" aria-hidden="false">
+            <p class="eyebrow">Welcome back</p>
+            <h1>Sign in to your journal</h1>
+            <p class="sub">Lanjut pantau performa trading lo.</p>
+
+            <form id="loginForm" novalidate>
+              <div class="field">
+                <label for="loginEmail">Email</label>
+                <input
+                  type="email"
+                  id="loginEmail"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <div class="field">
+                <div class="field-row">
+                  <label for="loginPassword">Password</label>
+                  <a href="#" class="forgot-link" id="forgotLink"
+                    >Forgot password?</a
+                  >
+                </div>
+                <input
+                  type="password"
+                  id="loginPassword"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn-auth" id="loginBtn">
+                <span class="btn-label">Sign In</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </form>
+
+            <p class="switch-line">
+              Belum punya akun?
+              <a href="#" data-switch="register">Create one</a>
+            </p>
+          </section>
+
+          <!-- REGISTER -->
+          <section class="auth-slide" id="registerSlide" aria-hidden="true">
+            <p class="eyebrow">Get started</p>
+            <h1>Create your account</h1>
+            <p class="sub">Mulai catat & analisa setiap trade lo.</p>
+
+            <form id="registerForm" novalidate>
+              <div class="field">
+                <label for="registerEmail">Email</label>
+                <input
+                  type="email"
+                  id="registerEmail"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="registerPassword">Password</label>
+                <input
+                  type="password"
+                  id="registerPassword"
+                  placeholder="Min. 8 karakter"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="registerConfirm">Confirm password</label>
+                <input
+                  type="password"
+                  id="registerConfirm"
+                  placeholder="Ulangi password"
+                  autocomplete="new-password"
+                  minlength="8"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn-auth" id="registerBtn">
+                <span class="btn-label">Create Account</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </form>
+
+            <p class="switch-line">
+              Udah punya akun? <a href="#" data-switch="login">Sign in</a>
+            </p>
+          </section>
+        </div>
+      </div>
+
+      <p class="auth-error" id="authError" role="alert"></p>
+      <p class="auth-toast" id="authToast" role="status"></p>
+    </main>
+
+    <script src="js/auth.js"></script>
+  </body>
+</html>
