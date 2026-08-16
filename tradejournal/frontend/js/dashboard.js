@@ -1,5 +1,5 @@
 const API_BASE =
-  window.API_BASE || "https://tradingjournal-production.up.railway.app";
+  window.API_BASE || "https://tradingjurnal-production.up.railway.app";
 
 function authHeaders() {
   const token = localStorage.getItem("access_token"); // swap for httpOnly cookie session before shipping to real users
