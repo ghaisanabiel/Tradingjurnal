@@ -14,6 +14,29 @@
   --radius-sm:10px;
 }
 
+html[data-theme="light"]{
+  --bg:#f4f5f8;
+  --surface:#ffffff;
+  --surface-2:#f0f1f5;
+  --border:#e2e4ea;
+  --text:#14161c;
+  --text-dim:#6b7280;
+}
+
+html{ transition:color-scheme .2s; }
+html[data-theme="light"] body::before{
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(108,92,231,.10), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(79,140,255,.07), transparent 55%),
+    radial-gradient(ellipse 800px 600px at 50% 120%, rgba(34,197,94,.05), transparent 60%);
+}
+html[data-theme="light"] body::after{
+  opacity:1;
+  background-image:
+    linear-gradient(rgba(15,18,25,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,18,25,.035) 1px, transparent 1px);
+}
+
 *{box-sizing:border-box;}
 body{
   margin:0;
@@ -45,7 +68,7 @@ body::after{
 
 /* ---- Sidebar (desktop) / bottom nav (mobile) ---- */
 .sidenav{
-  position:fixed; left:0; top:0; bottom:0; width:76px;
+  position:fixed; left:0; top:0; bottom:0; width:76px; overflow:visible;
   background:var(--surface); border-right:1px solid var(--border);
   display:flex; flex-direction:column; align-items:center; padding:20px 0; gap:8px; z-index:20;
 }
@@ -56,11 +79,25 @@ body::after{
   font-weight:700;font-size:14px;margin-bottom:24px;
 }
 .nav-item{
+  position:relative;
   width:48px;height:48px;border-radius:var(--radius-sm);
   display:flex;align-items:center;justify-content:center;
   color:var(--text-dim); text-decoration:none;
 }
 .nav-item.active,.nav-item:hover{ background:var(--surface-2); color:var(--accent-2); }
+.nav-item svg{ transition:transform .18s cubic-bezier(.34,1.56,.64,1); }
+.nav-item:hover svg{ transform:scale(1.18); }
+
+.nav-label{
+  position:absolute; left:calc(100% + 12px); top:50%; transform:translateY(-50%) translateX(-8px);
+  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+  padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:600; white-space:nowrap;
+  opacity:0; pointer-events:none; z-index:25;
+  box-shadow:0 12px 28px -10px rgba(0,0,0,.5);
+  transition:opacity .15s ease, transform .15s ease;
+}
+.nav-item:hover .nav-label{ opacity:1; transform:translateY(-50%) translateX(0); }
+@media (max-width:720px){ .nav-label{ display:none; } }
 
 .app{ margin-left:76px; padding:24px 32px 100px; max-width:1400px; }
 @media (min-width:1550px){

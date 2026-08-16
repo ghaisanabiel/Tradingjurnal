@@ -25,6 +25,31 @@ function logout() {
 
 document.getElementById("logoutBtn").addEventListener("click", logout);
 
+// ---- Theme toggle (light/dark) ----
+const SUN_PATH = '<path d="M12 3v2M12 19v2M5 5l1.5 1.5M17.5 17.5L19 19M3 12h2M19 12h2M5 19l1.5-1.5M17.5 6.5L19 5"/><circle cx="12" cy="12" r="4"/>';
+const MOON_PATH = '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>';
+
+function applyThemeUI(theme) {
+  const icon = document.getElementById("themeIcon");
+  const label = document.getElementById("themeLabel");
+  if (theme === "light") {
+    icon.innerHTML = SUN_PATH;
+    label.textContent = "Switch to Dark Mode";
+  } else {
+    icon.innerHTML = MOON_PATH;
+    label.textContent = "Switch to Light Mode";
+  }
+}
+applyThemeUI(document.documentElement.getAttribute("data-theme") || "dark");
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+  applyThemeUI(next);
+});
+
 // ---- Profile dropdown ----
 const profileTrigger = document.getElementById("profileTrigger");
 const profileDropdown = document.getElementById("profileDropdown");
