@@ -1,236 +1,220 @@
-:root{
-  --bg:#0b0e14;
-  --surface:#121722;
-  --surface-2:#171e2c;
-  --border:#232b3a;
-  --text:#eef1f6;
-  --text-dim:#8b93a7;
-  --accent:#6c5ce7;
-  --accent-2:#4f8cff;
-  --green:#22c55e;
-  --red:#ef4444;
-  --amber:#f5a623;
-  --radius:16px;
-  --radius-sm:10px;
+const API_BASE = window.API_BASE || "https://tradingjurnal-production.up.railway.app";
+
+function authHeaders() {
+  const token = localStorage.getItem("access_token"); // set by auth.js on auth.html, read here
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-html[data-theme="light"]{
-  --bg:#f4f5f8;
-  --surface:#ffffff;
-  --surface-2:#f0f1f5;
-  --border:#e2e4ea;
-  --text:#14161c;
-  --text-dim:#6b7280;
-}
-
-html{ transition:color-scheme .2s; }
-html[data-theme="light"] body::before{
-  background:
-    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(108,92,231,.10), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(79,140,255,.07), transparent 55%),
-    radial-gradient(ellipse 800px 600px at 50% 120%, rgba(34,197,94,.05), transparent 60%);
-}
-html[data-theme="light"] body::after{
-  opacity:1;
-  background-image:
-    linear-gradient(rgba(15,18,25,.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15,18,25,.035) 1px, transparent 1px);
-}
-
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  -webkit-font-smoothing:antialiased;
-  min-height:100vh;
-  position:relative;
-}
-svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-
-/* ---- Ambient background — subtle glow + grid texture, echoes the auth page ---- */
-body::before{
-  content:""; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:
-    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(108,92,231,.16), transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 10%, rgba(79,140,255,.10), transparent 55%),
-    radial-gradient(ellipse 800px 600px at 50% 120%, rgba(34,197,94,.06), transparent 60%);
-}
-body::after{
-  content:""; position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.5;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size:48px 48px;
-  mask-image:radial-gradient(ellipse 1000px 700px at 30% 0%, black 0%, transparent 70%);
-}
-
-/* ---- Sidebar (desktop) / bottom nav (mobile) ---- */
-.sidenav{
-  position:fixed; left:0; top:0; bottom:0; width:76px; overflow:visible;
-  background:var(--surface); border-right:1px solid var(--border);
-  display:flex; flex-direction:column; align-items:center; padding:20px 0; gap:8px; z-index:20;
-}
-.brand{
-  width:40px;height:40px;border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;font-size:14px;margin-bottom:24px;
-}
-.nav-item{
-  position:relative;
-  width:48px;height:48px;border-radius:var(--radius-sm);
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-dim); text-decoration:none;
-}
-.nav-item.active,.nav-item:hover{ background:var(--surface-2); color:var(--accent-2); }
-.nav-item svg{ transition:transform .18s cubic-bezier(.34,1.56,.64,1); }
-.nav-item:hover svg{ transform:scale(1.18); }
-
-.nav-label{
-  position:absolute; left:calc(100% + 12px); top:50%; transform:translateY(-50%) translateX(-8px);
-  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-  padding:6px 12px; border-radius:8px; font-size:12.5px; font-weight:600; white-space:nowrap;
-  opacity:0; pointer-events:none; z-index:25;
-  box-shadow:0 12px 28px -10px rgba(0,0,0,.5);
-  transition:opacity .15s ease, transform .15s ease;
-}
-.nav-item:hover .nav-label{ opacity:1; transform:translateY(-50%) translateX(0); }
-@media (max-width:720px){ .nav-label{ display:none; } }
-
-.app{ margin-left:76px; padding:24px 32px 100px; max-width:1400px; }
-@media (min-width:1550px){
-  .app{ margin-left:calc(76px + (100vw - 76px - 1400px) / 2); margin-right:calc((100vw - 76px - 1400px) / 2); }
-}
-
-.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
-.topbar h1{ font-size:22px; margin:0; }
-.topbar-actions{ display:flex; align-items:center; gap:12px; }
-.period-select,.btn-ghost{
-  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-  padding:9px 14px; border-radius:var(--radius-sm); font-size:13px; cursor:pointer;
-}
-.avatar{
-  width:36px;height:36px;border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  border:1px solid var(--border); cursor:pointer; padding:0; transition:box-shadow .15s ease, transform .15s ease;
-}
-.avatar:hover{ box-shadow:0 0 0 3px rgba(108,92,231,.22); }
-.avatar:active{ transform:scale(.94); }
-
-.profile-menu{ position:relative; }
-.profile-dropdown{
-  position:absolute; top:calc(100% + 10px); right:0; width:240px; z-index:30;
-  background:var(--surface-2); border:1px solid var(--border); border-radius:14px;
-  box-shadow:0 20px 45px -12px rgba(0,0,0,.55);
-  padding:8px; opacity:0; visibility:hidden; transform:translateY(-6px) scale(.98);
-  transition:opacity .16s ease, transform .16s ease, visibility .16s;
-}
-.profile-dropdown.open{ opacity:1; visibility:visible; transform:translateY(0) scale(1); }
-.profile-dropdown-header{ display:flex; align-items:center; gap:10px; padding:10px 8px 12px; }
-.avatar-lg{ width:34px;height:34px;border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--accent-2)); flex-shrink:0; }
-.profile-name{ font-size:13px; font-weight:600; }
-.profile-sub{ font-size:11px; color:var(--text-dim); }
-.dropdown-divider{ height:1px; background:var(--border); margin:6px 4px; }
-.dropdown-item{
-  width:100%; display:flex; align-items:center; gap:10px; text-align:left;
-  background:none; border:none; color:var(--text); font-size:13px; font-family:inherit;
-  padding:9px 10px; border-radius:9px; cursor:pointer;
-}
-.dropdown-item svg{ width:16px; height:16px; color:var(--text-dim); flex-shrink:0; }
-.dropdown-item:hover{ background:rgba(255,255,255,.05); }
-.dropdown-item-danger{ color:var(--red); }
-.dropdown-item-danger svg{ color:var(--red); }
-.dropdown-item-danger:hover{ background:rgba(239,68,68,.1); }
-
-.view{ display:none; } .view.active{ display:block; }
-.placeholder{ color:var(--text-dim); }
-
-/* ---- Summary card ---- */
-.summary-card{
-  background:linear-gradient(160deg, var(--surface), var(--surface-2));
-  border:1px solid var(--border); border-radius:var(--radius);
-  display:grid; grid-template-columns:repeat(3,1fr); padding:24px; gap:24px; margin-bottom:20px;
-  box-shadow:0 20px 50px -20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.03);
-}
-.summary-item{ display:flex; flex-direction:column; gap:6px; }
-.summary-icon{ width:36px;height:36px;border-radius:10px; margin-bottom:6px; }
-.summary-icon.wallet{ background:rgba(108,92,231,.18); }
-.summary-icon.trend,.summary-icon.dollar{ background:rgba(34,197,94,.16); }
-.summary-label{ color:var(--text-dim); font-size:13px; }
-.summary-value{ font-size:26px; font-weight:700; }
-.summary-value.positive{ color:var(--green); }
-.summary-sub{ font-size:12px; color:var(--text-dim); }
-.summary-sub.positive{ color:var(--green); }
-
-/* ---- Performance cards (horizontal scroll) ---- */
-.perf-scroll{
-  display:flex; gap:14px; overflow-x:auto; padding-bottom:8px; margin-bottom:28px;
-  scrollbar-width:none;
-}
-.perf-scroll::-webkit-scrollbar{ display:none; }
-.perf-card{
-  flex:0 0 150px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-  padding:16px; transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-}
-.perf-card:hover{
-  transform:translateY(-3px); border-color:rgba(108,92,231,.35);
-  box-shadow:0 14px 30px -12px rgba(108,92,231,.28);
-}
-.perf-card .icon{ width:32px;height:32px;border-radius:9px; margin-bottom:10px; }
-.perf-card .label{ color:var(--text-dim); font-size:12px; }
-.perf-card .value{ font-size:20px; font-weight:700; margin:4px 0 10px; }
-.perf-card svg.spark{ width:100%; height:28px; }
-
-/* ---- Journal ---- */
-.journal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-.journal-header h2{ font-size:18px; margin:0; }
-.journal-actions{ display:flex; gap:10px; }
-.journal-actions input{
-  background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-  padding:8px 12px; border-radius:var(--radius-sm); font-size:13px;
-}
-.btn-icon{ background:var(--surface-2); border:1px solid var(--border); color:var(--text); border-radius:var(--radius-sm); padding:8px 10px; cursor:pointer; }
-
-.journal-list{ display:flex; flex-direction:column; gap:12px; }
-.trade-card{
-  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-  padding:16px; display:grid; grid-template-columns:90px 1fr auto; gap:16px; align-items:center;
-  transition:transform .18s ease, border-color .18s ease;
-}
-.trade-card:hover{ transform:translateX(2px); border-color:rgba(255,255,255,.16); }
-.trade-chart{ width:90px; height:60px; border-radius:var(--radius-sm); background:var(--surface-2); }
-.trade-top{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
-.badge{ font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; }
-.badge.long{ background:rgba(34,197,94,.16); color:var(--green); }
-.badge.short{ background:rgba(239,68,68,.16); color:var(--red); }
-.pair{ font-weight:700; font-size:15px; }
-.trade-meta{ color:var(--text-dim); font-size:12px; margin-bottom:8px; }
-.trade-prices{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; font-size:13px; }
-.trade-prices .k{ display:block; color:var(--text-dim); font-size:11px; }
-.trade-result{ text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
-.trade-result .pnl{ font-weight:700; font-size:15px; }
-.trade-result .pnl.positive{ color:var(--green); }
-.trade-result .pnl.negative{ color:var(--red); }
-.trade-result .roi{ font-size:12px; }
-.trade-result .roi.positive{ color:var(--green); } .trade-result .roi.negative{ color:var(--red); }
-.status-badge{ font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; margin-top:2px; }
-.status-badge.win{ background:rgba(34,197,94,.16); color:var(--green); }
-.status-badge.loss{ background:rgba(239,68,68,.16); color:var(--red); }
-.status-badge.running{ background:rgba(245,166,35,.16); color:var(--amber); }
-.status-badge.breakeven{ background:rgba(139,147,167,.16); color:var(--text-dim); }
-
-/* ---- Responsive: mobile becomes bottom nav, single column, matches reference mockup ---- */
-@media (max-width: 720px){
-  .sidenav{
-    top:auto; bottom:0; left:0; right:0; width:auto; height:64px;
-    flex-direction:row; justify-content:space-around; border-right:none; border-top:1px solid var(--border);
-    padding:0;
+async function api(path, opts = {}) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...opts,
+    headers: { "Content-Type": "application/json", ...authHeaders(), ...(opts.headers || {}) },
+  });
+  if (res.status === 401) {
+    logout(); // token invalid/expired — bounce back to auth.html instead of surfacing a raw 401
+    throw new Error("Session expired, silakan login lagi");
   }
-  .brand{ display:none; }
-  .app{ margin-left:0; padding:16px 16px 90px; }
-  .summary-card{ grid-template-columns:1fr; gap:16px; }
-  .trade-card{ grid-template-columns:70px 1fr; }
-  .trade-result{ grid-column:1/-1; flex-direction:row; justify-content:space-between; align-items:center; }
-  .trade-prices{ grid-template-columns:repeat(2,1fr); }
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`);
+  return res.json();
 }
+
+function logout() {
+  localStorage.removeItem("access_token");
+  window.location.href = "auth.html";
+}
+
+document.getElementById("logoutBtn").addEventListener("click", logout);
+
+// ---- Theme toggle (light/dark) ----
+const SUN_PATH = '<path d="M12 3v2M12 19v2M5 5l1.5 1.5M17.5 17.5L19 19M3 12h2M19 12h2M5 19l1.5-1.5M17.5 6.5L19 5"/><circle cx="12" cy="12" r="4"/>';
+const MOON_PATH = '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>';
+
+function applyThemeUI(theme) {
+  const icon = document.getElementById("themeIcon");
+  const label = document.getElementById("themeLabel");
+  if (theme === "light") {
+    icon.innerHTML = SUN_PATH;
+    label.textContent = "Switch to Dark Mode";
+  } else {
+    icon.innerHTML = MOON_PATH;
+    label.textContent = "Switch to Light Mode";
+  }
+}
+applyThemeUI(document.documentElement.getAttribute("data-theme") || "dark");
+
+document.getElementById("themeToggle").addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme") || "dark";
+  const next = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+  applyThemeUI(next);
+});
+
+// ---- Profile dropdown ----
+const profileTrigger = document.getElementById("profileTrigger");
+const profileDropdown = document.getElementById("profileDropdown");
+
+function closeDropdown() {
+  profileDropdown.classList.remove("open");
+  profileTrigger.setAttribute("aria-expanded", "false");
+}
+
+profileTrigger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const willOpen = !profileDropdown.classList.contains("open");
+  profileDropdown.classList.toggle("open", willOpen);
+  profileTrigger.setAttribute("aria-expanded", String(willOpen));
+});
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".profile-menu")) closeDropdown();
+});
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDropdown(); });
+
+// Menu items without a real feature yet — honest placeholder instead of a dead click.
+document.querySelectorAll(".dropdown-item[data-soon]").forEach((item) => {
+  item.addEventListener("click", () => {
+    const label = item.dataset.soon;
+    showLoadError(`${label} belum tersedia — segera hadir.`);
+    setTimeout(() => document.querySelector(".load-error-banner")?.remove(), 3000);
+    closeDropdown();
+  });
+});
+
+const fmtUSD = (n) => `$${Number(n ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const fmtPct = (n) => `${n >= 0 ? "+" : ""}${Number(n ?? 0).toFixed(2)}%`;
+const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-";
+
+// ---- Nav switching ----
+document.querySelectorAll(".nav-item").forEach((el) => {
+  el.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+    document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+    el.classList.add("active");
+    document.getElementById(`view-${el.dataset.view}`).classList.add("active");
+    document.getElementById("pageTitle").textContent = el.title;
+  });
+});
+
+// ---- Overview / summary + performance cards ----
+async function loadOverview() {
+  const stats = await api("/stats/overview");
+
+  document.getElementById("statTotalPnl").textContent = fmtUSD(stats.total_pnl);
+  document.getElementById("statTotalPnlPct").textContent = "";
+
+  const perf = [
+    { label: "Win Rate", value: `${stats.win_rate}%`, color: "#6c5ce7" },
+    { label: "Total Trades", value: stats.total_trades, color: "#4f8cff" },
+    { label: "Profit Factor", value: stats.profit_factor ?? "—", color: "#22c55e" },
+    { label: "Expectancy", value: fmtUSD(stats.expectancy), color: "#f5a623" },
+    { label: "Avg Holding", value: `${stats.avg_holding_hours}h`, color: "#6c5ce7" },
+    { label: "Largest Win", value: fmtUSD(stats.largest_win), color: "#22c55e" },
+    { label: "Largest Loss", value: fmtUSD(stats.largest_loss), color: "#ef4444" },
+  ];
+
+  const container = document.getElementById("perfCards");
+  container.innerHTML = perf.map((p) => `
+    <div class="perf-card">
+      <div class="icon" style="background:${p.color}2a"></div>
+      <div class="label">${p.label}</div>
+      <div class="value">${p.value}</div>
+    </div>
+  `).join("");
+}
+
+// ---- Journal list ----
+const cardTpl = document.getElementById("tradeCardTemplate");
+
+function renderTradeCard(trade) {
+  const node = cardTpl.content.cloneNode(true);
+  node.querySelector(".badge").textContent = trade.side.toUpperCase();
+  node.querySelector(".badge").classList.add(trade.side);
+  node.querySelector(".pair").textContent = trade.pair;
+  node.querySelector(".trade-meta").textContent =
+    `${trade.margin_mode ?? ""}${trade.margin_mode ? " · " : ""}${trade.leverage ? trade.leverage + "x" : ""}`;
+  node.querySelector(".entry").textContent = trade.entry_price;
+  node.querySelector(".exit").textContent = trade.exit_price ?? "-";
+  node.querySelector(".open").textContent = fmtTime(trade.open_time);
+  node.querySelector(".close").textContent = fmtTime(trade.close_time);
+
+  const pnlEl = node.querySelector(".pnl");
+  pnlEl.textContent = fmtUSD(trade.pnl);
+  pnlEl.classList.add(trade.pnl >= 0 ? "positive" : "negative");
+
+  const roiEl = node.querySelector(".roi");
+  roiEl.textContent = trade.roi != null ? fmtPct(trade.roi) : "";
+  roiEl.classList.add(trade.roi >= 0 ? "positive" : "negative");
+
+  const statusEl = node.querySelector(".status-badge");
+  statusEl.textContent = trade.status.toUpperCase();
+  statusEl.classList.add(trade.status);
+
+  if (trade.screenshot_url) {
+    node.querySelector(".trade-chart").style.backgroundImage = `url(${trade.screenshot_url})`;
+    node.querySelector(".trade-chart").style.backgroundSize = "cover";
+  }
+  return node;
+}
+
+let journalCursor = null;
+async function loadJournal({ reset = true, q = "" } = {}) {
+  if (reset) {
+    journalCursor = null;
+    document.getElementById("journalList").innerHTML = "";
+  }
+  const params = new URLSearchParams({ limit: "20" });
+  if (q) params.set("q", q);
+  if (journalCursor) params.set("cursor", journalCursor);
+
+  const trades = await api(`/trades?${params}`);
+  const list = document.getElementById("journalList");
+  if (reset && trades.length === 0) {
+    list.innerHTML = `<p class="placeholder">Belum ada trade. Connect exchange lalu klik "Sync All", atau tambah manual lewat POST /trades.</p>`;
+    return;
+  }
+  trades.forEach((t) => list.appendChild(renderTradeCard(t)));
+  if (trades.length) journalCursor = trades[trades.length - 1].id;
+}
+
+document.getElementById("journalSearch").addEventListener("input", (e) => {
+  clearTimeout(window._searchDebounce);
+  window._searchDebounce = setTimeout(() => loadJournal({ reset: true, q: e.target.value }), 300);
+});
+
+// infinite scroll
+window.addEventListener("scroll", () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 400) {
+    loadJournal({ reset: false });
+  }
+});
+
+document.getElementById("syncAllBtn").addEventListener("click", async () => {
+  const connections = await api("/exchanges");
+  await Promise.all(connections.map((c) => api(`/exchanges/${c.id}/sync`, { method: "POST" })));
+  loadOverview();
+  loadJournal();
+});
+
+// ---- Init ----
+// The inline script at the top of index.html already redirects to auth.html
+// if there's no token, so by the time this file runs we're authenticated.
+function showLoadError(message) {
+  const existing = document.querySelector(".load-error-banner");
+  if (existing) existing.remove();
+  const banner = document.createElement("div");
+  banner.className = "load-error-banner";
+  banner.style.cssText = "background:#2a1414;border:1px solid #ef4444;color:#ef4444;padding:12px 16px;border-radius:10px;margin-bottom:20px;font-size:13px;";
+  banner.textContent = message;
+  document.querySelector(".topbar").insertAdjacentElement("afterend", banner);
+}
+
+(async function init() {
+  try {
+    await Promise.all([loadOverview(), loadJournal()]);
+  } catch (e) {
+    console.error("Failed to load dashboard:", e);
+    showLoadError(`Gagal fetch dari ${API_BASE} — cek backend jalan dan CORS mengizinkan origin ini. (${e.message})`);
+  }
+})();
