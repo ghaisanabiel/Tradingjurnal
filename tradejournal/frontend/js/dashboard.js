@@ -71,7 +71,113 @@ document.addEventListener("click", (e) => {
 });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDropdown(); });
 
-// Menu items without a real feature yet — honest placeholder instead of a dead click.
+// ---- Exchange modal ----
+const exchangeOverlay = document.getElementById("exchangeModalOverlay");
+const exchangeList = document.getElementById("exchangeList");
+const exchangeForm = document.getElementById("exchangeForm");
+const exchangeConnectBtn = document.getElementById("exchangeConnectBtn");
+const exchangeError = document.getElementById("exchangeError");
+
+function exchangeIconLabel(exchange) {
+  return { binance: "BIN", bybit: "BYB", bitget: "BTG" }[exchange] || exchange.slice(0, 3).toUpperCase();
+}
+
+async function loadExchangeList() {
+  exchangeList.innerHTML = `<p class="placeholder">Loading...</p>`;
+  try {
+    const connections = await api("/exchanges");
+    if (connections.length === 0) {
+      exchangeList.innerHTML = `<p class="placeholder">Belum ada exchange yang terhubung.</p>`;
+      return;
+    }
+    exchangeList.innerHTML = "";
+    connections.forEach((c) => {
+      const row = document.createElement("div");
+      row.className = "exchange-row";
+      row.innerHTML = `
+        <div class="ex-icon">${exchangeIconLabel(c.exchange)}</div>
+        <div class="ex-info">
+          <div class="ex-name">${c.exchange} <span class="exchange-status ${c.status}">${c.status}</span></div>
+          <div class="ex-meta">${c.label} · last sync: ${c.last_sync_at ? fmtTime(c.last_sync_at) : "belum pernah"}</div>
+        </div>
+        <div class="ex-actions">
+          <button class="ex-sync" data-id="${c.id}">Sync</button>
+          <button class="ex-disconnect" data-id="${c.id}">Disconnect</button>
+        </div>`;
+      exchangeList.appendChild(row);
+    });
+  } catch (e) {
+    exchangeList.innerHTML = `<p class="placeholder">Gagal muat daftar exchange. (${e.message})</p>`;
+  }
+}
+
+exchangeList.addEventListener("click", async (e) => {
+  const syncBtn = e.target.closest(".ex-sync");
+  const disconnectBtn = e.target.closest(".ex-disconnect");
+  if (syncBtn) {
+    syncBtn.textContent = "Syncing...";
+    syncBtn.disabled = true;
+    try {
+      await api(`/exchanges/${syncBtn.dataset.id}/sync`, { method: "POST" });
+      await loadExchangeList();
+      loadOverview();
+      loadJournal();
+    } catch (err) {
+      syncBtn.textContent = "Sync";
+      syncBtn.disabled = false;
+    }
+  }
+  if (disconnectBtn) {
+    if (!confirm("Putuskan koneksi exchange ini?")) return;
+    try {
+      await api(`/exchanges/${disconnectBtn.dataset.id}`, { method: "DELETE" });
+      await loadExchangeList();
+    } catch (err) {
+      alert(`Gagal disconnect: ${err.message}`);
+    }
+  }
+});
+
+document.getElementById("exchangeSelect").addEventListener("change", (e) => {
+  document.getElementById("passphraseField").style.display = e.target.value === "bitget" ? "block" : "none";
+});
+
+exchangeForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  exchangeError.textContent = "";
+  exchangeConnectBtn.classList.add("is-loading");
+  exchangeConnectBtn.disabled = true;
+  try {
+    await api("/exchanges/connect", {
+      method: "POST",
+      body: JSON.stringify({
+        exchange: document.getElementById("exchangeSelect").value,
+        label: document.getElementById("exchangeLabel").value || "default",
+        api_key: document.getElementById("exchangeApiKey").value,
+        api_secret: document.getElementById("exchangeApiSecret").value,
+        passphrase: document.getElementById("exchangePassphrase").value || null,
+      }),
+    });
+    exchangeForm.reset();
+    document.getElementById("passphraseField").style.display = "none";
+    await loadExchangeList();
+    loadOverview();
+    loadJournal();
+  } catch (err) {
+    exchangeError.textContent = `Gagal connect: ${err.message}`;
+  } finally {
+    exchangeConnectBtn.classList.remove("is-loading");
+    exchangeConnectBtn.disabled = false;
+  }
+});
+
+document.getElementById("openExchangeModal").addEventListener("click", () => {
+  closeDropdown();
+  exchangeOverlay.classList.add("open");
+  loadExchangeList();
+});
+document.getElementById("exchangeModalClose").addEventListener("click", () => exchangeOverlay.classList.remove("open"));
+exchangeOverlay.addEventListener("click", (e) => { if (e.target === exchangeOverlay) exchangeOverlay.classList.remove("open"); });
 document.querySelectorAll(".dropdown-item[data-soon]").forEach((item) => {
   item.addEventListener("click", () => {
     const label = item.dataset.soon;

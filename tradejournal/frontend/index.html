@@ -7,6 +7,8 @@
 <script>
   document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "dark");
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=2">
 </head>
 <body>
@@ -54,7 +56,7 @@
               <div class="profile-sub">Trade Journal</div>
             </div>
           </div>
-          <button class="dropdown-item" data-soon="Connected Exchange">
+          <button class="dropdown-item" id="openExchangeModal">
             <svg viewBox="0 0 24 24"><path d="M4 17V7a2 2 0 0 1 2-2h8l6 6v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 5v6h6"/></svg>
             Connected Exchange
           </button>
@@ -147,6 +149,54 @@
     </div>
   </article>
 </template>
+
+<div class="modal-overlay" id="exchangeModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Connected Exchange</h2>
+      <button class="modal-close" id="exchangeModalClose" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="exchange-list" id="exchangeList">
+      <p class="placeholder">Loading...</p>
+    </div>
+
+    <div class="modal-divider"></div>
+
+    <form id="exchangeForm">
+      <h3 class="modal-subheading">Connect New Exchange</h3>
+      <div class="field">
+        <label for="exchangeSelect">Exchange</label>
+        <select id="exchangeSelect">
+          <option value="binance">Binance</option>
+          <option value="bybit">Bybit</option>
+          <option value="bitget">Bitget</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="exchangeLabel">Label</label>
+        <input type="text" id="exchangeLabel" value="default" placeholder="default">
+      </div>
+      <div class="field">
+        <label for="exchangeApiKey">API Key <span class="field-hint">(read-only key, not trade-enabled)</span></label>
+        <input type="text" id="exchangeApiKey" autocomplete="off" required>
+      </div>
+      <div class="field">
+        <label for="exchangeApiSecret">API Secret</label>
+        <input type="password" id="exchangeApiSecret" autocomplete="off" required>
+      </div>
+      <div class="field" id="passphraseField" style="display:none;">
+        <label for="exchangePassphrase">Passphrase <span class="field-hint">(Bitget only)</span></label>
+        <input type="password" id="exchangePassphrase" autocomplete="off">
+      </div>
+      <button type="submit" class="btn-auth" id="exchangeConnectBtn">
+        <span class="btn-label">Connect Exchange</span>
+        <span class="btn-spinner"></span>
+      </button>
+      <p class="exchange-error" id="exchangeError"></p>
+    </form>
+  </div>
+</div>
 
 <script src="js/dashboard.js?v=2"></script>
 </body>
