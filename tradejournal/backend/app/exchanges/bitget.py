@@ -60,7 +60,7 @@ class BitgetConnector(ExchangeConnector):
                 fee=0,
                 pnl=float(p["unrealizedPL"]),
                 roi=None,
-                open_time=datetime.utcfromtimestamp(int(p["cTime"]) / 1000),
+                open_time=datetime.utcfromtimestamp(int(p.get("cTime") or p.get("ctime") or 0) / 1000) if (p.get("cTime") or p.get("ctime")) else datetime.utcnow(),
                 close_time=None,
                 status="running",
             ))
@@ -87,8 +87,8 @@ class BitgetConnector(ExchangeConnector):
                 fee=float(row.get("openFee", 0)) + float(row.get("closeFee", 0)),
                 pnl=pnl,
                 roi=None,
-                open_time=datetime.utcfromtimestamp(int(row["cTime"]) / 1000),
-                close_time=datetime.utcfromtimestamp(int(row["uTime"]) / 1000),
+                open_time=datetime.utcfromtimestamp(int(row["ctime"]) / 1000),
+                close_time=datetime.utcfromtimestamp(int(row["utime"]) / 1000),
                 status=pnl_to_status(pnl),
             ))
         return out
