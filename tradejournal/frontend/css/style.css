@@ -240,10 +240,17 @@ body::after{
 
 /* ---- Exchange modal ---- */
 .modal-overlay{
-  position:fixed; inset:0; z-index:60; display:none; align-items:center; justify-content:center;
+  position:fixed; inset:0; z-index:60; display:flex; align-items:center; justify-content:center;
   background:rgba(5,7,11,.6); backdrop-filter:blur(6px); padding:20px;
+  opacity:0; visibility:hidden; transition:opacity .2s ease, visibility .2s;
 }
-.modal-overlay.open{ display:flex; }
+.modal-overlay.open{ opacity:1; visibility:visible; }
+.modal{
+  width:100%; max-width:440px; max-height:88vh; overflow-y:auto;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius);
+  padding:24px; box-shadow:0 30px 70px -20px rgba(0,0,0,.6);
+  transform:scale(.9); opacity:0; transition:transform .2s ease, opacity .2s ease;
+}
 .modal-overlay.open .modal{ transform:scale(1); opacity:1; }
 .modal{
   width:100%; max-width:440px; max-height:88vh; overflow-y:auto;
