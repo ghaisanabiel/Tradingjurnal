@@ -54,6 +54,7 @@ class User(Base):
 
     exchange_connections = relationship("ExchangeConnection", back_populates="user", cascade="all, delete-orphan")
     trades = relationship("Trade", back_populates="user", cascade="all, delete-orphan")
+    trading_plans = relationship("TradingPlan", back_populates="user", cascade="all, delete-orphan")
 
 
 class ExchangeConnection(Base):
@@ -78,6 +79,20 @@ class ExchangeConnection(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="exchange_connections")
+
+
+class TradingPlan(Base):
+    """User-defined setup/strategy, e.g. 'Support Resistance', 'EMA Touch'. Attached to trades optionally."""
+    __tablename__ = "trading_plans"
+    __table_args__ = (UniqueConstraint("user_id", "name", name="uq_user_plan_name"),)
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="trading_plans")
 
 
 class Trade(Base):
@@ -112,8 +127,13 @@ class Trade(Base):
     screenshot_url = Column(String, nullable=True)
     note = Column(Text, nullable=True)
 
+    trading_plan_id = Column(UUID(as_uuid=True), ForeignKey("trading_plans.id"), nullable=True)
+    planned_tp = Column(Float, nullable=True)
+    planned_sl = Column(Float, nullable=True)
+
     source = Column(String, default="sync")  # sync | manual
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("User", back_populates="trades")
+    trading_plan = relationship("TradingPlan")
