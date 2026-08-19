@@ -167,7 +167,49 @@ def profit_history(
     return [{"period": r.period.isoformat(), "pnl": round(r.pnl or 0, 2)} for r in rows]
 
 
-@router.get("/notable")
+def _hit_tp(t: models.Trade) -> bool:
+    if t.planned_tp is None or t.exit_price is None:
+        return False
+    return t.exit_price >= t.planned_tp if t.side == models.Side.long else t.exit_price <= t.planned_tp
+
+
+def _hit_sl(t: models.Trade) -> bool:
+    if t.planned_sl is None or t.exit_price is None:
+        return False
+    return t.exit_price <= t.planned_sl if t.side == models.Side.long else t.exit_price >= t.planned_sl
+
+
+@router.get("/by-plan")
+def stats_by_plan(db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
+    """Per trading-plan breakdown: trade count, win rate, TP hits, SL hits, total pnl."""
+    plans = db.query(models.TradingPlan).filter_by(user_id=user.id).all()
+    trades = (
+        db.query(models.Trade)
+        .filter(models.Trade.user_id == user.id, models.Trade.status != models.TradeStatus.running)
+        .all()
+    )
+
+    def summarize(plan_trades):
+        total = len(plan_trades)
+        wins = sum(1 for t in plan_trades if t.status == models.TradeStatus.win)
+        return {
+            "trades": total,
+            "win_rate": round(wins / total * 100, 2) if total else 0.0,
+            "tp_hits": sum(1 for t in plan_trades if _hit_tp(t)),
+            "sl_hits": sum(1 for t in plan_trades if _hit_sl(t)),
+            "total_pnl": round(sum(t.pnl or 0 for t in plan_trades), 2),
+        }
+
+    result = []
+    for plan in plans:
+        plan_trades = [t for t in trades if t.trading_plan_id == plan.id]
+        result.append({"id": str(plan.id), "name": plan.name, **summarize(plan_trades)})
+
+    unassigned = [t for t in trades if t.trading_plan_id is None]
+    if unassigned:
+        result.append({"id": None, "name": "No Plan", **summarize(unassigned)})
+
+    return sorted(result, key=lambda x: x["total_pnl"], reverse=True)
 def notable_trades(db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     """Biggest win and biggest loss, with screenshot + note — for the Notes section."""
     biggest_win = (
