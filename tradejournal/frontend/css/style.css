@@ -284,14 +284,14 @@ body::after{
 .exchange-status.connected{ background:rgba(34,197,94,.16); color:var(--green); }
 .exchange-status.error{ background:rgba(239,68,68,.16); color:var(--red); }
 
-#exchangeForm .field{ margin-bottom:14px; }
-#exchangeForm label{ display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px; }
+#exchangeForm .field,#tradeEditForm .field{ margin-bottom:14px; }
+#exchangeForm label,#tradeEditForm label{ display:block; font-size:12px; color:var(--text-dim); margin-bottom:6px; }
 .field-hint{ font-weight:400; opacity:.75; }
-#exchangeForm input,#exchangeForm select{
+#exchangeForm input,#exchangeForm select,#tradeEditForm input,#tradeEditForm select{
   width:100%; background:var(--surface); border:1px solid var(--border); color:var(--text);
   padding:10px 12px; border-radius:var(--radius-sm); font-size:13px; font-family:inherit;
 }
-#exchangeForm input:focus,#exchangeForm select:focus{ outline:none; border-color:var(--accent-2); }
+#exchangeForm input:focus,#exchangeForm select:focus,#tradeEditForm input:focus,#tradeEditForm select:focus{ outline:none; border-color:var(--accent-2); }
 .exchange-error{ color:var(--red); font-size:12.5px; min-height:16px; margin:10px 0 0; }
 
 .btn-auth{
