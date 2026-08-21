@@ -50,12 +50,19 @@ h1,h2{ font-family:'Space Grotesk',sans-serif; }
   border-radius:50%; transform:translate(-50%,-50%);
   transition:opacity .2s ease;
 }
-.cursor-dot{ width:6px; height:6px; background:var(--gold); }
+.cursor-dot{
+  width:6px; height:6px; background:var(--gold);
+  box-shadow:0 0 12px 4px rgba(232,178,92,.7), 0 0 28px 10px rgba(232,178,92,.35);
+}
 .cursor-ring{
   width:34px; height:34px; border:1px solid rgba(232,178,92,.5);
-  transition:width .18s ease, height .18s ease, border-color .18s ease, transform .06s linear;
+  box-shadow:0 0 20px 4px rgba(232,178,92,.15);
+  transition:width .18s ease, height .18s ease, border-color .18s ease, box-shadow .18s ease, transform .06s linear;
 }
-.cursor-ring.hover{ width:52px; height:52px; border-color:var(--accent-2); background:rgba(79,140,255,.08); }
+.cursor-ring.hover{
+  width:52px; height:52px; border-color:var(--accent-2); background:rgba(79,140,255,.1);
+  box-shadow:0 0 30px 8px rgba(79,140,255,.35);
+}
 @media (hover:none){ .cursor-dot,.cursor-ring{ display:none; } body{ cursor:auto; } }
 
 /* ---- Layout ---- */
