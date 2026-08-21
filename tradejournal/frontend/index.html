@@ -9,7 +9,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <script>
@@ -121,9 +121,76 @@
     </div>
   </section>
 
-  <section id="view-journal" class="view"><p class="placeholder">Full journal list — same card component as dashboard, no limit, with filter panel (exchange/pair/status/date).</p></section>
-  <section id="view-statistics" class="view"><p class="placeholder">Overview / Performance / Risk / Consistency / History — from /stats/* endpoints.</p></section>
-  <section id="view-calendar" class="view"><p class="placeholder">Month grid from /stats/calendar — click a day to list that day's trades.</p></section>
+  <section id="view-journal" class="view">
+    <div class="journal-header">
+      <h2>Journal</h2>
+      <div class="journal-actions">
+        <input type="search" id="journalFullSearch" placeholder="Search pair...">
+        <select id="journalFilterExchange">
+          <option value="">All Exchanges</option>
+          <option value="binance">Binance</option>
+          <option value="bybit">Bybit</option>
+          <option value="bitget">Bitget</option>
+        </select>
+        <select id="journalFilterStatus">
+          <option value="">All Status</option>
+          <option value="win">Win</option>
+          <option value="loss">Loss</option>
+          <option value="breakeven">Breakeven</option>
+          <option value="running">Running</option>
+        </select>
+      </div>
+    </div>
+    <div class="journal-list" id="journalFullList"></div>
+  </section>
+
+  <section id="view-statistics" class="view">
+    <div class="stats-section">
+      <h3 class="stats-heading">Overview</h3>
+      <div class="stats-grid" id="statsOverviewGrid"></div>
+    </div>
+    <div class="stats-section">
+      <h3 class="stats-heading">Performance</h3>
+      <div class="stats-grid-2" id="statsPerformanceGrid"></div>
+    </div>
+    <div class="stats-section">
+      <h3 class="stats-heading">Risk</h3>
+      <div class="stats-grid" id="statsRiskGrid"></div>
+    </div>
+    <div class="stats-section">
+      <h3 class="stats-heading">Consistency</h3>
+      <div class="stats-grid" id="statsConsistencyGrid"></div>
+    </div>
+    <div class="stats-section">
+      <div class="stats-heading-row">
+        <h3 class="stats-heading">History</h3>
+        <div class="history-tabs" id="historyTabs">
+          <button class="history-tab active" data-granularity="daily">Daily</button>
+          <button class="history-tab" data-granularity="weekly">Weekly</button>
+          <button class="history-tab" data-granularity="monthly">Monthly</button>
+        </div>
+      </div>
+      <div class="history-bars" id="statsHistoryBars"></div>
+    </div>
+    <div class="stats-section">
+      <h3 class="stats-heading">Notes</h3>
+      <div class="notable-grid" id="statsNotableGrid"></div>
+    </div>
+    <div class="stats-section">
+      <h3 class="stats-heading">By Trading Plan</h3>
+      <div class="stats-grid-2" id="statsPlanGrid"></div>
+    </div>
+  </section>
+
+  <section id="view-calendar" class="view">
+    <div class="calendar-header">
+      <button class="btn-icon" id="calPrevMonth">‹</button>
+      <h2 id="calMonthLabel">—</h2>
+      <button class="btn-icon" id="calNextMonth">›</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="journal-list" id="calendarDayTrades"></div>
+  </section>
 </main>
 
 <template id="tradeCardTemplate">
@@ -198,6 +265,44 @@
   </div>
 </div>
 
-<script src="js/dashboard.js?v=2"></script>
+<div class="modal-overlay" id="tradeEditOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Trade Detail</h2>
+      <button class="modal-close" id="tradeEditClose" aria-label="Close">&times;</button>
+    </div>
+
+    <form id="tradeEditForm">
+      <div class="field">
+        <label for="tradePlanSelect">Trading Plan</label>
+        <div class="plan-select-row">
+          <select id="tradePlanSelect"><option value="">— No plan —</option></select>
+          <button type="button" class="btn-small" id="newPlanBtn">+ New</button>
+        </div>
+      </div>
+      <div class="field tp-sl-row">
+        <div>
+          <label for="tradePlannedTp">Planned TP</label>
+          <input type="number" step="any" id="tradePlannedTp" placeholder="0.00">
+        </div>
+        <div>
+          <label for="tradePlannedSl">Planned SL</label>
+          <input type="number" step="any" id="tradePlannedSl" placeholder="0.00">
+        </div>
+      </div>
+      <div class="field">
+        <label for="tradeNoteInput">Note</label>
+        <input type="text" id="tradeNoteInput" placeholder="Catatan trade ini...">
+      </div>
+      <button type="submit" class="btn-auth" id="tradeEditSaveBtn">
+        <span class="btn-label">Save</span>
+        <span class="btn-spinner"></span>
+      </button>
+      <p class="exchange-error" id="tradeEditError"></p>
+    </form>
+  </div>
+</div>
+
+<script src="js/dashboard.js?v=3"></script>
 </body>
 </html>
